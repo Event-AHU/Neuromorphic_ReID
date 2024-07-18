@@ -1,4 +1,10 @@
 
+
+
+
+* [ECCV 2024] **Privacy-Preserving Adaptive Re-Identification without Image Transfer**, Hamza Rami, Jhony H. Giraldo, Nicolas Winckler, Stéphane Lathuilière
+  [[Paper](https://arxiv.org/abs/2407.12589)] 
+
 * **基于事件相机的敏感生物信息隐私保护研究进展**, 中国工程科学，沈艳晴,董鹏飞,张恙菁,陈仕韬,郑南宁 [[Paper](https://www.engineering.org.cn/ch/10.15302/J-SSCAE-2024.01.017)]
 
 * Ahmad, Shafiq, et al. "**Event-driven re-id: A new benchmark and method towards privacy-preserving person re-identification**."
