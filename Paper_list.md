@@ -1,6 +1,8 @@
 
 
-
+* [ACM MM 2024] **PixelFade: Privacy-preserving Person Re-identification with Noise-guided Progressive Replacement**,
+  D Zhang, YX Peng, XM Wu, A Wu, WS Zheng
+  [[Paper](https://openreview.net/pdf?id=TFueeF3aTo)] 
 
 * [ECCV 2024] **Privacy-Preserving Adaptive Re-Identification without Image Transfer**, Hamza Rami, Jhony H. Giraldo, Nicolas Winckler, Stéphane Lathuilière
   [[Paper](https://arxiv.org/abs/2407.12589)] 
