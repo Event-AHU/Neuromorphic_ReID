@@ -17,6 +17,7 @@
 * Cao, Chengzhi, et al. "**Event-Guided Person Re-Identification via Sparse-Dense Complementary Learning.**"
   Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2023.
   [[Paper](https://openaccess.thecvf.com/content/CVPR2023/html/Cao_Event-Guided_Person_Re-Identification_via_Sparse-Dense_Complementary_Learning_CVPR_2023_paper.html)]
+  [[Code](https://github.com/Chengzhi-Cao/SDCL)]
 
 * Ahmad, Shafiq, Pietro Morerio, and Alessio Del Bue. **"Person re-identification without identification via event anonymization.**"
   Proceedings of the IEEE/CVF International Conference on Computer Vision. 2023.
