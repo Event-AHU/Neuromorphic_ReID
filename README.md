@@ -1,1 +1,1 @@
-# Event_ReID
+# TriPro-ReID
