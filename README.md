@@ -1,1 +1,3 @@
-# TriPro-ReID
+# Neuromorphic_ReID
+
+
