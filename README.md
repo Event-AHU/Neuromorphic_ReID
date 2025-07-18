@@ -27,6 +27,7 @@ DATASETS:
 OUTPUT_DIR: 'your_output_dir'
 ```
 And you need to organize your dataset as:
+```
 MARS:
   --- RGB
     --- train
@@ -35,7 +36,8 @@ MARS:
     --- train
     --- test
   --- info
-  
+ ```
+ 
 Then, run
 ```
 CUDA_VISIBLE_DEVICES=0 python train_mars.py
