@@ -1,7 +1,9 @@
 # Neuromorphic_ReID
 
 **Requirements**
+```
 We use a single RTX3090 24G GPU for training and evaluation.
+```
 
 **Basic Environment**
 ```
