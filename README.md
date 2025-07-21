@@ -1,18 +1,29 @@
 # Neuromorphic_ReID
 
-**Requirements**
+
+
+### Research Paper 
+**When Person Re-Identification Meets Event Camera: A Benchmark Dataset and An Attribute-guided Re-Identification Framework**, 
+Xiao Wang, Qian Zhu, Shujuan Wu, Bo Jiang, Shiliang Zhang, Yaowei Wang, Yonghong Tian, Bin Luo
+[[Paper](https://arxiv.org/abs/2507.13659)] 
+
+### Abstract 
+Recent researchers have proposed using event cameras for person re-identification (ReID) due to their promising performance and better balance in terms of privacy protection, event camera-based person ReID has attracted significant attention. Currently, mainstream event-based person ReID algorithms primarily focus on fusing visible light and event stream, as well as preserving privacy. Although significant progress has been made, these methods are typically trained and evaluated on small-scale or simulated event camera datasets, making it difficult to assess their real identification performance and generalization ability. To address the issue of data scarcity, this paper introduces a large-scale RGB-event based person ReID dataset, called EvReID. The dataset contains 118,988 image pairs and covers 1200 pedestrian identities, with data collected across multiple seasons, scenes, and lighting conditions. We also evaluate 15 state-of-the-art person ReID algorithms, laying a solid foundation for future research in terms of both data and benchmarking. Based on our newly constructed dataset, this paper further proposes a pedestrian attribute-guided contrastive learning framework to enhance feature learning for person re-identification, termed TriPro-ReID. This framework not only effectively explores the visual features from both RGB frames and event streams, but also fully utilizes pedestrian attributes as mid-level semantic features. Extensive experiments on the EvReID dataset and MARS datasets fully validated the effectiveness of our proposed RGB-Event person ReID framework. 
+
+
+### **Requirements**
 ```
 We use a single RTX3090 24G GPU for training and evaluation.
 ```
 
-**Basic Environment**
+### **Basic Environment**
 ```
 Python 3.9.16
 pytorch 1.12.1
 torchvision 0.13.1
 ```
 
-**Basic Environment**
+### **Benchmark Dataset**
 ```
 Download the datasets (MARS, EvReID) and then unzip them to your_dataset_dir.
 You can get these datasets in the following **Links**:
@@ -20,7 +31,7 @@ You can get these datasets in the following **Links**:
 **EvReID:** ----
 ```
 
-## :car: Run TriPro-ReID
+###  :car: Run TriPro-ReID
 For example, if you want to run this method on MARS, you need to modify the bottom of configs/vit_mars_clipreid.yml to
 ```
 DATASETS:
@@ -45,9 +56,38 @@ Then, run
 CUDA_VISIBLE_DEVICES=0 python train_mars.py
 ```
 
-## :car: Evaluation
+###  :car: Evaluation
 For example, if you want to test methods on MARS, run
 ```
 CUDA_VISIBLE_DEVICES=0 python test.py
 ```
+
+
+
+
+### Acknowledgement 
+
+* [CLIP-reID]
+* [MARS-dataset]
+* [VTFPAR++] 
+
+
+### Citation 
+If you find this works helps your research, please give us a **star** and cite the following works: 
+
+```
+@misc{wang2025personreidentificationmeetsevent,
+      title={When Person Re-Identification Meets Event Camera: A Benchmark Dataset and An Attribute-guided Re-Identification Framework}, 
+      author={Xiao Wang and Qian Zhu and Shujuan Wu and Bo Jiang and Shiliang Zhang and Yaowei Wang and Yonghong Tian and Bin Luo},
+      year={2025},
+      eprint={2507.13659},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2507.13659}, 
+}
+```
+
+
+
+
 
