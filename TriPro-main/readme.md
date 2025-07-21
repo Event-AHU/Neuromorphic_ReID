@@ -18,9 +18,8 @@ We use a single RTX3090 24G GPU for training and evaluation.
 
 ### **Basic Environment**
 ```
-Python 3.9.16
-pytorch 1.12.1
-torchvision 0.13.1
+conda env create -f environment.yml
+conda activate your_env_name ##### which you need to change in the environment.yml
 ```
 
 ### **Benchmark Dataset**
