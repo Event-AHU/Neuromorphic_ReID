@@ -54,11 +54,18 @@ MARS:
     --- train
     --- test
   --- info
+  --- attr
+    --- train.json
+    --- test.json
  ```
  
 Then, run
 ```
 CUDA_VISIBLE_DEVICES=0 python train_mars.py
+```
+Or you can directly run the following command, which is more convenient
+```
+sh mars.sh
 ```
 
 ###  :car: Evaluation
