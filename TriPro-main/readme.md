@@ -30,18 +30,16 @@ conda activate your_env_name ##### which you need to change in the environment.y
 
 ### **Benchmark Dataset**
 
-```
-* The EvReID dataset is released on [**BaiDuYun**](https://pan.baidu.com/s/1fD7j-EzvtohY8jt90QNq6g?pwd=zzzz).
-* The MARS* (which contains two modalities) is released on [**BaiDuYun**](https://pan.baidu.com/s/1b2mKktkaqoDFpm1_-4KeIg?pwd=zzzz)
 
-```
-We also provide Google Drive to download the datasets:
+* **EvReID dataset** is released on [**BaiDuYun**](https://pan.baidu.com/s/1fD7j-EzvtohY8jt90QNq6g?pwd=zzzz).
+* **MARS*** (which contains two modalities) is released on [**BaiDuYun**](https://pan.baidu.com/s/1b2mKktkaqoDFpm1_-4KeIg?pwd=zzzz)
 
-```
-* The EvReID dataset is released on [**GoogleDrive**]().
-* The MARS* (which contains two modalities) is released on [**GoogleDrive**]()
 
-```
+We also provide **Google Drive** and **DropBox** to download these datasets:
+
+* **EvReID dataset** is released on [[**GoogleDrive**]()] or [[**DropBox**]()]
+* **MARS*** (which contains two modalities) is released on [[**GoogleDrive**]()] or [[**DropBox**]()]
+
 
 ###  :car: Run TriPro-ReID
 For example, if you want to run this method on MARS, you need to modify the bottom of configs/vit_mars_clipreid.yml to
