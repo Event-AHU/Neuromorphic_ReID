@@ -29,18 +29,17 @@ conda activate your_env_name ##### which you need to change in the environment.y
 ```
 
 ### **Benchmark Dataset**
+
 ```
-Download the datasets (MARS, EvReID) and then unzip them to your_dataset_dir.
-You can get these datasets in the following BaiduYun **Links**:
-**MARS:** ----
-**EvReID**: https://pan.baidu.com/s/1fD7j-EzvtohY8jt90QNq6g?pwd=zzzz
+* The EvReID dataset is released on [**BaiDuYun**](https://pan.baidu.com/s/1fD7j-EzvtohY8jt90QNq6g?pwd=zzzz).
+* The MARS* (which contains two modalities) is released on [**BaiDuYun**]()
 
 ```
 
 ```
 We also provide Google Drive to download the datasets:
-**MARS:** ----
-**EvReID:**----
+* The EvReID dataset is released on [**GoogleDrive**]().
+* The MARS* (which contains two modalities) is released on [**GoogleDrive**]()
 
 ```
 
