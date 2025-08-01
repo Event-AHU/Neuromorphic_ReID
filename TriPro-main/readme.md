@@ -33,7 +33,8 @@ conda activate your_env_name ##### which you need to change in the environment.y
 Download the datasets (MARS, EvReID) and then unzip them to your_dataset_dir.
 You can get these datasets in the following **Links**:
 **MARS:** ----
-**EvReID:** ----
+**EvReID:** https://pan.baidu.com/s/1EyDxqWw1lxVY5wgpBhToiw?pwd=zzzz  password: zzzz 
+
 ```
 
 ###  :car: Run TriPro-ReID
