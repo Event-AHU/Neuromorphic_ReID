@@ -33,7 +33,7 @@ conda activate your_env_name ##### which you need to change in the environment.y
 Download the datasets (MARS, EvReID) and then unzip them to your_dataset_dir.
 You can get these datasets in the following BaiduYun **Links**:
 **MARS:** ----
-**EvReID:**[BaiduYun]([https://pan.baidu.com/s/1ury7JR82QNt1MYrl9ly2fQ?pwd=4mfp](https://pan.baidu.com/s/1EyDxqWw1lxVY5wgpBhToiw?pwd=zzzz))
+**EvReID:**[**BaiDuYun**](https://pan.baidu.com/s/1fD7j-EzvtohY8jt90QNq6g?pwd=zzzz)
 
 ```
 
