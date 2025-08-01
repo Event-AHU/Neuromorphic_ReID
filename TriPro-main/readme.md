@@ -37,7 +37,7 @@ conda activate your_env_name ##### which you need to change in the environment.y
 
 We also provide **Google Drive** and **DropBox** to download these datasets:
 
-* **EvReID dataset** is released on [[**GoogleDrive**]()] or [[**DropBox**]()]
+* **EvReID dataset** is released on [[**GoogleDrive**]()] or [[**DropBox**](https://www.dropbox.com/scl/fi/786c3wtixdms8yg24tyyf/EvReID.zip?rlkey=xvs02ygaeu73k446slbuura2t&st=i28si6vl&dl=0)]
 * **MARS*** (which contains two modalities) is released on [[**GoogleDrive**]()] or [[**DropBox**]()]
 
 
