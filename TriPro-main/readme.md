@@ -31,14 +31,14 @@ conda activate your_env_name ##### which you need to change in the environment.y
 ### **Benchmark Dataset**
 
 
-* **EvReID dataset** is released on [**BaiDuYun**](https://pan.baidu.com/s/1fD7j-EzvtohY8jt90QNq6g?pwd=zzzz).
-* **MARS*** (which contains two modalities) is released on [**BaiDuYun**](https://pan.baidu.com/s/1b2mKktkaqoDFpm1_-4KeIg?pwd=zzzz)
+* **EvReID dataset (1.83 GB)** is released on [**BaiDuYun**](https://pan.baidu.com/s/1fD7j-EzvtohY8jt90QNq6g?pwd=zzzz).
+* **MARS (43.73 GB)*** (which contains two modalities) is released on [**BaiDuYun**](https://pan.baidu.com/s/1b2mKktkaqoDFpm1_-4KeIg?pwd=zzzz)
 
 
-We also provide **Google Drive** and **DropBox** to download these datasets:
+We also provide **DropBox** to download these datasets:
 
-* **EvReID dataset** is released on [[**GoogleDrive**]()] or [[**DropBox**](https://www.dropbox.com/scl/fi/786c3wtixdms8yg24tyyf/EvReID.zip?rlkey=xvs02ygaeu73k446slbuura2t&st=i28si6vl&dl=0)]
-* **MARS*** (which contains two modalities) is released on [[**GoogleDrive**]()] or [[**DropBox**]()]
+* **EvReID dataset (1.83 GB)** is released on [[**DropBox**](https://www.dropbox.com/scl/fi/786c3wtixdms8yg24tyyf/EvReID.zip?rlkey=xvs02ygaeu73k446slbuura2t&st=i28si6vl&dl=0)]
+* **MARS (43.73 GB)*** (which contains two modalities) is released on [[**DropBox**](https://www.dropbox.com/scl/fi/tn6uie57fw72y7wqvgh0x/mars.zip?rlkey=ajm5038fhd57d4cngb4qoqmu3&st=q0ply2rc&dl=0)]
 
 
 ###  :car: Run TriPro-ReID
