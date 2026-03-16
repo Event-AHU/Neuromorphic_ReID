@@ -1,4 +1,4 @@
-#<img src="logo.jpg" width="50px"> EPRBench
+# <img src="logo.jpg" width="50px"> EPRBench
 
 This is the official repository for the paper **"[EPRBench: A High-Quality Benchmark Dataset for Event Stream Based Visual Place Recognition](https://arxiv.org/abs/2602.12919)"**.
 
