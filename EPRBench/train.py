@@ -1,0 +1,270 @@
+import torch
+import logging
+logging.getLogger('PIL').setLevel(logging.ERROR)
+import numpy as np
+from tqdm import tqdm,trange
+import torch.nn as nn
+import multiprocessing
+from os.path import join
+from datetime import datetime
+from torch.utils.data.dataloader import DataLoader
+torch.backends.cudnn.benchmark= True  # Provides a speedup
+
+import util
+import test
+import parser
+import commons
+import datasets_ws
+import network
+from loss import loss_function
+# from dataloaders.GSVCities import get_GSVCities
+from dataloaders.EventVPRDataset import get_EventVPR
+from backbone.text_encoder_clip import CLIPTextEncoder
+
+import warnings
+warnings.filterwarnings("ignore")
+import os
+#### Initial setup: parser, logging...
+args = parser.parse_arguments()
+start_time = datetime.now()
+args.save_dir = join("logs", args.save_dir, start_time.strftime('%Y-%m-%d_%H-%M-%S'))
+commons.setup_logging(args.save_dir)
+commons.make_deterministic(args.seed)
+logging.info(f"Arguments: {args}")
+logging.info(f"The outputs are being saved in {args.save_dir}")
+logging.info(f"Using {torch.cuda.device_count()} GPUs and {multiprocessing.cpu_count()} CPUs")
+
+#### Creation of Datasets
+logging.debug(f"Loading dataset folder {args.dataset_folder}")
+
+val_ds = get_EventVPR(args.dataset_folder, split="test", use_text=args.use_text, text_folder=(args.text_folder or os.path.join(args.dataset_folder, "scene_descriptions")))
+logging.info(f"Val set: {val_ds}")
+
+test_ds = get_EventVPR(args.dataset_folder, split="test", use_text=args.use_text, text_folder=(args.text_folder or os.path.join(args.dataset_folder, "scene_descriptions")))
+logging.info(f"Test set: {test_ds}")
+
+args.features_dim = 14*768
+#### Initialize model
+model = network.SGVPRNet(pretrained_foundation = True, foundation_model_path = args.foundation_model_path)
+
+model = model.to(args.device)
+
+model = torch.nn.DataParallel(model)
+
+text_encoder = CLIPTextEncoder(
+    model_name='ViT-B-16',
+    pretrained='laion2b_s34b_b88k',
+    output_dim=768, 
+    freeze_clip=True
+    )
+text_encoder = text_encoder.to(args.device)
+
+## Freeze parameters except adapter
+for name, param in model.module.backbone.named_parameters():
+    if "adapter" not in name:
+        param.requires_grad = False
+
+## initialize Adapter
+for n, m in model.named_modules():
+    if 'adapter' in n:
+        for n2, m2 in m.named_modules():
+            if 'D_fc2' in n2:
+                if isinstance(m2, nn.Linear):
+                    nn.init.constant_(m2.weight, 0.)
+                    nn.init.constant_(m2.bias, 0.)
+        for n2, m2 in m.named_modules():
+            if 'conv' in n2:
+                if isinstance(m2, nn.Conv2d):
+                    nn.init.constant_(m2.weight, 0.00001)
+                    nn.init.constant_(m2.bias, 0.00001)
+
+#### Setup Optimizer and Loss
+if args.optim == "adam":
+    # optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.Adam([
+        {'params': [p for p in model.parameters() if p.requires_grad]},
+        {'params': [p for p in text_encoder.parameters() if p.requires_grad]}
+    ], lr=args.lr, weight_decay=0.001)
+elif args.optim == "sgd":
+    # optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=0.001)
+    optimizer = torch.optim.SGD([
+        {'params': [p for p in model.parameters() if p.requires_grad]},
+        {'params': [p for p in text_encoder.parameters() if p.requires_grad]}
+    ], lr=args.lr, momentum=0.9, weight_decay=0.001)
+
+#### Resume model, optimizer, and other training parameters
+if args.resume:
+    model, optimizer, best_r5, start_epoch_num, not_improved_num = util.resume_train(args, model, optimizer)
+    logging.info(f"Resuming from epoch {start_epoch_num} with best recall@5 {best_r5:.1f}")
+else:
+    best_r5 = start_epoch_num = not_improved_num = 0
+
+logging.info(f"Output dimension of the model is {args.features_dim}")
+
+train_dataset = get_EventVPR(
+    args.dataset_folder,
+    split="train",
+    use_text=args.use_text, 
+    text_folder=(args.text_folder or os.path.join(args.dataset_folder, "scene_descriptions"))
+    )
+
+train_loader_config = {
+    'batch_size': args.train_batch_size,
+    'num_workers': args.num_workers,
+    'drop_last': False,
+    'pin_memory': True,
+    'shuffle': True
+    }
+
+#### Training loop
+ds = DataLoader(dataset=train_dataset, **train_loader_config)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=len(ds)*3, gamma=0.5, last_epoch=-1)
+for epoch_num in range(start_epoch_num, args.epochs_num):
+    logging.info(f"Start training epoch: {epoch_num:02d}")
+    
+    epoch_start_time = datetime.now()
+    total_loss_sum = 0.0
+    tri_loss_sum = 0.0
+    i2t_loss_sum = 0.0
+    t2i_loss_sum = 0.0
+    num_batchs = 0
+    epoch_losses = np.zeros((0,1), dtype=np.float32)
+          
+    model = model.train()
+    epoch_losses=[]
+    # 训练循环 for epoch_num ... 内部
+    for batch in tqdm(ds):
+        images, place_id, text = batch
+            
+        BS, N, ch, h, w = images.shape
+        # 将序列展平为批次
+        images = images.view(BS*N, ch, h, w)
+        labels = place_id.view(BS*N)  # 确保标签也被正确展平
+        labels = labels.to(args.device)
+        
+        if text is not None:
+            # 展平文本数据并编码（CLIP）
+            text = [t for sublist in text for t in sublist]  # 展平嵌套列表，长度应为 BS*N
+            
+            # 句向量 (BS*N, 768)
+            text_vec = text_encoder(text)
+            assert text_vec.shape[0] == BS*N, f"text vec batch {text_vec.shape[0]} != {BS*N}"
+            
+            # token 向量与 mask：text_tokens (BS*N, L, 768), attn_mask (BS*N, L)；mask=1 有效，0 为 padding
+            text_tokens, attn_mask = text_encoder.encode_batch_tokens(text)
+            assert text_tokens.shape[0] == BS*N, f"text tokens batch {text_tokens.shape[0]} != {BS*N}"
+            
+            # 同时进行句向量融合与 token 级跨注意力融合
+            descriptors, image_global_raw = model(
+                images.to(args.device),
+                text=text_vec,
+                text_tokens=text_tokens,
+                text_mask=attn_mask,
+                return_aux=True
+            )
+            image_global_raw_place = image_global_raw.view(BS, N, -1).mean(dim=1)
+            text_vec_place = text_vec.view(BS, N, -1).mean(dim=1)
+        else:
+            descriptors = model(images.to(args.device))
+            
+        descriptors = descriptors.cuda()
+        if text is not None:
+            loss, tri_loss, loss_i2t, loss_t2i = loss_function(
+                descriptors,
+                labels,
+                image_global_raw=image_global_raw_place,
+                text_global_raw=text_vec_place,
+                lambda_contrast=args.lambda_contrast,
+                temperature=args.temperature,
+            )
+        else:
+            loss, tri_loss, loss_i2t, loss_t2i = loss_function(
+                descriptors,
+                labels,
+                lambda_contrast=args.lambda_contrast,
+                temperature=args.temperature,
+            )
+        del descriptors
+        
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        scheduler.step()
+        
+        # Keep track of all losses by appending them to epoch_losses
+        batch_loss = loss.item()
+        total_loss_sum += batch_loss
+        tri_loss_sum += tri_loss.item()
+        i2t_loss_sum += loss_i2t.item()
+        t2i_loss_sum += loss_t2i.item()
+        num_batchs += 1
+        epoch_losses = np.append(epoch_losses, batch_loss)
+        del loss
+    
+    # 计算平均损失
+    avg_total_loss = total_loss_sum / num_batchs
+    avg_tri_loss = tri_loss_sum / num_batchs
+    avg_i2t_loss = i2t_loss_sum / num_batchs
+    avg_t2i_loss = t2i_loss_sum / num_batchs
+    
+    logging.info(f"Finished epoch {epoch_num:02d} in {str(datetime.now() - epoch_start_time)[:-7]}, "
+                 f"average epoch total loss = {avg_total_loss:.4f}, "
+                 f"triplet loss = {avg_tri_loss:.4f}, "
+                 f"i2t loss = {avg_i2t_loss:.4f}, "
+                 f"t2i loss = {avg_t2i_loss:.4f}"   
+                )
+    
+    # Compute recalls on validation set
+    recalls, recalls_str = test.test(args, val_ds, model,text_encoder=text_encoder)
+    logging.info(f"Recalls on val set {val_ds}: {recalls_str}")
+    
+    is_best = recalls[1] > best_r5
+    prev_best_r5 = best_r5
+    # if is_best:
+    #     best_r5 = recalls[1]
+    #     not_improved_num = 0
+    #     logging.info(f"Improved: previous best R@5 = {prev_best_r5:.1f}, current R@5 = {best_r5:.1f}")
+    # else:
+    #     not_improved_num += 1
+    #     logging.info(f"Not improved: {not_improved_num} / {args.patience}: best R@5 = {best_r5:.1f}, current R@5 = {recalls[1]:.1f}")
+    
+    # Save checkpoint, which contains all training parameters
+    util.save_checkpoint(args, {
+        "epoch_num": epoch_num,
+        "model_state_dict": model.state_dict(),
+        "optimizer_state_dict": optimizer.state_dict(), 
+        "recalls": recalls, 
+        "best_r5": best_r5,
+        "not_improved_num": not_improved_num,
+        "text_encoder_state_dict": text_encoder.state_dict()
+    }, is_best, filename="last_model.pth")
+    
+    # If recall@5 did not improve for "many" epochs, stop training
+    if is_best:
+        logging.info(f"Improved: previous best R@5 = {best_r5:.1f}, current R@5 = {(recalls[1]):.1f}")
+        best_r5 = (recalls[1])
+        not_improved_num = 0
+    else:
+        not_improved_num += 1
+        logging.info(f"Not improved: {not_improved_num} / {args.patience}: best R@5 = {best_r5:.1f}, current R@5 = {(recalls[1]):.1f}")
+        if not_improved_num >= args.patience:
+            logging.info(f"Performance did not improve for {not_improved_num} epochs. Stop training.")
+            break
+
+
+logging.info(f"Best R@5: {best_r5:.1f}")
+logging.info(f"Trained for {epoch_num+1:02d} epochs, in total in {str(datetime.now() - start_time)[:-7]}")
+
+#### Test best model on test set
+logging.info("Test *best* model on test set")
+best_model_state_dict = torch.load(join(args.save_dir, "best_model.pth"))["model_state_dict"]
+model.load_state_dict(best_model_state_dict)
+recalls, recalls_str = test.test(args, test_ds, model, test_method=args.test_method, text_encoder=text_encoder)
+logging.info(f"Recalls on {test_ds}: {recalls_str}")
+
+#### Test last model on test set
+logging.info("Test *last* model on test set")
+last_model_state_dict = torch.load(join(args.save_dir, "last_model.pth"))["model_state_dict"]
+model.load_state_dict(last_model_state_dict)
+recalls, recalls_str = test.test(args, test_ds, model, test_method=args.test_method, text_encoder=text_encoder)
+logging.info(f"Recalls on {test_ds}: {recalls_str}")
