@@ -64,7 +64,7 @@ bash train.sh
 To evaluate the trained model on the EPRBench test set:
 
 ```bash
-python eval.py --eval_datasets_folder /path/to/EventVPR --eval_dataset_name EventVPR --text_folder /path/to/OpenEventVPR/EventVPR/scene_descriptions --resume /path/to/best_model.pth --use_text
+python eval.py --eval_datasets_folder /path/to/EventVPR --eval_dataset_name EventVPR --text_folder /path/to/EventVPR/scene_descriptions --resume /path/to/best_model.pth --use_text
 ```
 Or simply run the script:
 
