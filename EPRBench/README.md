@@ -17,6 +17,7 @@ To support semantic-aware and language-integrated VPR research, we provide LLM-g
 
 ### Prerequisites
 
+we use single RTX 3090 24G GPU for training and evaluation.
 - Python 3.9
 - PyTorch (tested with 2.1.2+cu118)
 - Other dependencies: `pip install -r requirements.txt`
@@ -85,7 +86,7 @@ If you find this repo useful for your research, please consider citing our paper
 ```bibtex
 @article{wang2026eprbench,
   title={EPRBench: A High-Quality Benchmark Dataset for Event Stream Based Visual Place Recognition},
-  author={Wang, Xiao and others},
+  author={Wang, Xiao and Xiong, Xingxing and Gao, Jinfeng and Lou, Xufeng and Jiang, Bo and Chen, Si-bao and Wang, Yaowei and Tian, Yonghong},
   journal={arXiv preprint arXiv:2602.12919},
   year={2026}
 }
