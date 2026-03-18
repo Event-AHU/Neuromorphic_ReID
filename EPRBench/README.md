@@ -84,11 +84,14 @@ bash eval.sh
 If you find this repo useful for your research, please consider citing our paper:
 
 ```bibtex
-@article{wang2026eprbench,
-  title={EPRBench: A High-Quality Benchmark Dataset for Event Stream Based Visual Place Recognition},
-  author={Wang, Xiao and Xiong, Xingxing and Gao, Jinfeng and Lou, Xufeng and Jiang, Bo and Chen, Si-bao and Wang, Yaowei and Tian, Yonghong},
-  journal={arXiv preprint arXiv:2602.12919},
-  year={2026}
+@misc{wang2026eprbenchhighqualitybenchmarkdataset,
+      title={EPRBench: A High-Quality Benchmark Dataset for Event Stream Based Visual Place Recognition}, 
+      author={Xiao Wang and Xingxing Xiong and Jinfeng Gao and Xufeng Lou and Bo Jiang and Si-bao Chen and Yaowei Wang and Yonghong Tian},
+      year={2026},
+      eprint={2602.12919},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2602.12919}, 
 }
 ```
 
