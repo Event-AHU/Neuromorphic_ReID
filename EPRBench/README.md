@@ -84,7 +84,7 @@ bash eval.sh
 If you find this repo useful for your research, please consider citing our paper:
 
 ```bibtex
-@misc{wang2026eprbenchhighqualitybenchmarkdataset,
+@misc{wang2026eprbench,
       title={EPRBench: A High-Quality Benchmark Dataset for Event Stream Based Visual Place Recognition}, 
       author={Xiao Wang and Xingxing Xiong and Jinfeng Gao and Xufeng Lou and Bo Jiang and Si-bao Chen and Yaowei Wang and Yonghong Tian},
       year={2026},
