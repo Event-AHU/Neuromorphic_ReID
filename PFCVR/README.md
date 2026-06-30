@@ -8,6 +8,12 @@ We propose **PFCVR**, a Part-level Fine-grained Cross-modal Vehicle Retrieval
 framework, and release **T2I-VeRW**, a new large-scale text-to-image vehicle
 Re-ID benchmark with 14,668 images of 1,796 identities.
 
+## Dataset Download
+
+T2I-VeRW dataset can be downloaded from the following link:
+
+链接: https://pan.baidu.com/s/1fo_6PEcyN-AmtEXgTrdCoQ?pwd=c2e9 提取码: c2e9
+
 ## Requirements
 
 ```bash
